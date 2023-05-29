@@ -21,8 +21,8 @@ Azure AD は、SAML レスポンスに SAML 署名証明書を利用して署名
 アプリケーションは、受け取った SAML レスポンスを検証し、問題がなければ、信頼している IdP である Azure AD から送られていることが証明され、アプリケーションへのアクセスを許可する動作となります。
 以下シーケンスでいうところの、5 から 6 の処理となります。
 
-![](https://docs.microsoft.com/ja-jp/azure/active-directory/develop/media/single-sign-on-saml-protocol/active-directory-saml-single-sign-on-workflow.png)
-- [シングル サインオンの SAML プロトコル | Microsoft Docs](https://docs.microsoft.com/ja-jp/azure/active-directory/develop/single-sign-on-saml-protocol)
+![](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/media/single-sign-on-saml-protocol/active-directory-saml-single-sign-on-workflow.png)
+- [シングル サインオンの SAML プロトコル | Microsoft Docs](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/single-sign-on-saml-protocol)
 
 以上が、SAML 署名証明書が利用されるシナリオの概要となります。  
 それでは、実際の SAML 署名証明書を確認してみましょう。  
@@ -85,11 +85,19 @@ Azure AD が利用する SAML 署名証明書は、以下の画面で確認す�
 ただし、アプリケーション次第でもありますし、有効期限が経過する前に SAML 署名証明書の更新を実施するよう、ご検討ください。  
 
 ### <span style="color: blue; ">Q:</span> SAML リクエストをアプリケーション側で署名しているが、Azure AD で検証用の証明書は管理しているのか？  
-<span style="color: red; ">A:</span> 管理していません。  
-Azure AD は SAML リクエスト時の署名は検証せずに無視をする動作となります。  
-仮にアプリケーション側で証明書の更新が発生しても、Azure AD ではアプリケーション側からの SAML リクエストの署名を検証するための証明書を管理していないため、Azure AD 側での更新は考慮する必要はありません。
+<span style="color: red; ">A:</span> ~~管理していません。  
+Azure AD は SAML リクエスト時の署名は検証せずに無視をする動作となります。仮にアプリケーション側で証明書の更新が発生しても、Azure AD ではアプリケーション側からの SAML リクエストの署名を検証するための証明書を管理していないため、Azure AD 側での更新は考慮する必要はありません。~~
 
-- [署名 | Microsoft Docs](https://docs.microsoft.com/ja-jp/azure/active-directory/develop/single-sign-on-saml-protocol#signature)
+~~- [署名 | Microsoft Docs](https://learn.microsoft.com/ja-jp/azure/active-directory/develop/single-sign-on-saml-protocol#signature)~~
+
+<span style="color: red; ">(2023/6 追記)</span>   
+従来通り、既定では Azure AD は SAML リクエスト時の署名は検証せずに無視する動作となりますが、 2023/4 より、 SAML リクエスト時の署名検証ができるようになりました。  
+SAML リクエストの署名検証を有効にすることで、 SAML リクエスト自体の正真性について担保できるようになります。
+そのため、 HTTPS 通信によるセキュリティ保障だけでは不十分だと考える場合には、 SAML リクエストの署名検証を有効にすることで、より強固なセキュリティを確保できるようになります。
+
+SAML リクエストの署名検証の設定方法につきましては、次の公開情報に記載されておりますため、ご参照ください。  
+[SAML 要求の署名検証](https://learn.microsoft.com/ja-jp/azure/active-directory/manage-apps/howto-enforce-signed-saml-authentication)
+
 
 ### <span style="color: blue; ">Q:</span> SAML 署名証明書の期間は？長くできるの？  
 <span style="color: red; ">A:</span> Azure AD が発行する SAML 署名証明書は、最大で 3 年の有効期限です。  
@@ -128,7 +136,7 @@ Get-ChildItem -Path cert:\localMachine\my\832A24298E691642AB05A6056A6EF6C7EF8BC5
 "署名アルゴリズム" は、署名に用いるアルゴリズムを決める設定となります。  
 ![](./how-to-update-samlsigningcertificate/CertificateDetail-Signature.png)
 
-- [SAML トークンの詳細な証明書署名オプション | Microsoft Docs](https://docs.microsoft.com/ja-jp/azure/active-directory/manage-apps/certificate-signing-options)
+- [SAML トークンの詳細な証明書署名オプション | Microsoft Docs](https://learn.microsoft.com/ja-jp/azure/active-directory/manage-apps/certificate-signing-options)
 
 
 ### <span style="color: blue; ">Q:</span> SAML 署名証明書がきれる前に通知できますか？  
@@ -144,5 +152,5 @@ SAML 証明書の有効期限が切れる 60 日前、30 日前、7 日前に、
 送信されるメールのサンプルはこちらになります。  
 ![](./how-to-update-samlsigningcertificate/NotificationSample.png)
 
-- [証明書の有効期限のメール通知アドレスの追加 | Microsoft Docs](https://docs.microsoft.com/ja-jp/azure/active-directory/manage-apps/manage-certificates-for-federated-single-sign-on#add-email-notification-addresses-for-certificate-expiration)
+- [証明書の有効期限のメール通知アドレスの追加 | Microsoft Docs](https://learn.microsoft.com/ja-jp/azure/active-directory/manage-apps/tutorial-manage-certificates-for-federated-single-sign-on#add-email-notification-addresses-for-certificate-expiration)
 
